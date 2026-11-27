@@ -33,16 +33,16 @@ const SHAPES = [
 /* Spelrondes, in speelvolgorde. min = minimaal aantal spelers, def = standaard aan */
 const MODES = {
   quiz:  { t: "Quiz", d: "Kies het goede antwoord op je telefoon. Hoe sneller, hoe meer punten.", min: 1, def: true },
-  who:   { t: "Wie van ons…?", d: "Stem op wie het best bij de stelling past. Kies je hetzelfde als de meerderheid, dan krijg je punten.", min: 2 },
-  quip:  { t: "Lolbroek", d: "Je krijgt twee vragen: schrijf het grappigste antwoord. Daarna strijden de antwoorden in duels en stemt de rest.", min: 3, def: true },
-  wave:  { t: "Golflengte", d: "Eén speler ziet waar het doel op de schaal ligt en geeft een hint. De rest schuift zo dicht mogelijk bij het doel.", min: 2, def: true },
-  fake:  { t: "De Faker", d: "Iedereen krijgt hetzelfde geheime woord, behalve de Faker. Geef één hintwoord en ontmasker de Faker, of blijf als Faker onder de radar.", min: 3, def: true },
-  count: { t: "Hoeveel van ons?", d: "Beantwoord stiekem ja of nee, en raad hoeveel spelers ja zeiden.", min: 2, def: true },
-  bluff: { t: "Bluf", d: "Verzin een geloofwaardig nep-antwoord. Daarna zoek je het echte antwoord tussen alle verzinsels. Trapt iemand in jouw bluf, dan scoor jij.", min: 2 },
-  split: { t: "Verdeel de groep", d: "Maak een dilemma af zodat de groep precies in tweeën splitst. Hoe dichter bij 50/50, hoe meer punten.", min: 3 },
-  art:   { t: "Kunstbluf", d: "Teken je geheime opdracht. Daarna verzint iedereen een nep-titel bij elkaars tekening. Zoek de echte titel.", min: 3 },
-  tele:  { t: "Doorgeefluik", d: "Schrijf een zin, teken andermans zin, beschrijf andermans tekening… Aan het eind zie je wat ervan geworden is.", min: 3 },
-  draw:  { t: "Tekenen & raden", d: "Eén speler tekent op zijn telefoon, de rest raadt zo snel mogelijk wat het is.", min: 2, def: true }
+  who:   { t: "Most Likely To", d: "Stem op wie het best bij de stelling past. Kies je hetzelfde als de meerderheid, dan krijg je punten.", min: 2 },
+  quip:  { t: "Punchline", d: "Je krijgt twee vragen: schrijf het grappigste antwoord. Daarna strijden de antwoorden in duels en stemt de rest.", min: 3, def: true },
+  wave:  { t: "Spectrum", d: "Eén speler ziet waar het doel op de schaal ligt en geeft een hint. De rest schuift zo dicht mogelijk bij het doel.", min: 2, def: true },
+  fake:  { t: "The Faker", d: "Iedereen krijgt hetzelfde geheime woord, behalve de Faker. Geef één hintwoord en ontmasker de Faker, of blijf als Faker onder de radar.", min: 3, def: true },
+  count: { t: "How Many of Us?", d: "Beantwoord stiekem ja of nee, en raad hoeveel spelers ja zeiden.", min: 2, def: true },
+  bluff: { t: "Bluff", d: "Verzin een geloofwaardig nep-antwoord. Daarna zoek je het echte antwoord tussen alle verzinsels. Trapt iemand in jouw bluf, dan scoor jij.", min: 2 },
+  split: { t: "Fifty-Fifty", d: "Maak een dilemma af zodat de groep precies in tweeën splitst. Hoe dichter bij 50/50, hoe meer punten.", min: 3 },
+  art:   { t: "Art Bluff", d: "Teken je geheime opdracht. Daarna verzint iedereen een nep-titel bij elkaars tekening. Zoek de echte titel.", min: 3 },
+  tele:  { t: "Broken Telephone", d: "Schrijf een zin, teken andermans zin, beschrijf andermans tekening… Aan het eind zie je wat ervan geworden is.", min: 3 },
+  draw:  { t: "Draw & Guess", d: "Eén speler tekent op zijn telefoon, de rest raadt zo snel mogelijk wat het is.", min: 2, def: true }
 };
 function toast(msg, ms = 2600) {
   const t = document.createElement("div"); t.className = "toast"; t.textContent = msg; document.body.appendChild(t);
@@ -564,7 +564,7 @@ function renderHost() {
   } else if (ph === "quip_v" || ph === "quip_r") {
     const rev = ph === "quip_r", tot = rev ? it.votes[0].length + it.votes[1].length : 0;
     stage = `<div class="qwrap">${rlabel()}${bigQ(esc(it.q) + "…", 1)}
-      <div class="duel">${[0, 1].map(i => `<div class="qcard ${rev && it.votes[i].length > it.votes[1 - i].length ? "win" : ""}"><div class="qa">${esc(it.a[i])}</div>${rev ? `<div class="qby">${av(P_(it.by[i]))}${esc(P_(it.by[i]).name)} · ${tot ? Math.round(it.votes[i].length / tot * 100) : 0}%</div><span class="voters">${it.votes[i].map(v => av(P_(v))).join("")}</span>${it.lol === i ? `<div class="stamp">LOLBROEK!</div>` : ""}` : ""}</div>${i === 0 ? '<div class="vs">VS</div>' : ""}`).join("")}</div>
+      <div class="duel">${[0, 1].map(i => `<div class="qcard ${rev && it.votes[i].length > it.votes[1 - i].length ? "win" : ""}"><div class="qa">${esc(it.a[i])}</div>${rev ? `<div class="qby">${av(P_(it.by[i]))}${esc(P_(it.by[i]).name)} · ${tot ? Math.round(it.votes[i].length / tot * 100) : 0}%</div><span class="voters">${it.votes[i].map(v => av(P_(v))).join("")}</span>${it.lol === i ? `<div class="stamp">PUNCHLINE!</div>` : ""}` : ""}</div>${i === 0 ? '<div class="vs">VS</div>' : ""}`).join("")}</div>
       ${rev ? gainsLine() : waitRow()}</div>`;
   } else if (ph === "wave_c" || ph === "wave_g" || ph === "wave_r") {
     const ps = P_(it.psy);
