@@ -17,6 +17,12 @@ Partygame in de browser: één scherm (tv/laptop) is de host, iedereen speelt me
 | Art Bluff | Drawful | Teken, verzin nep-titels, zoek de echte |
 | Broken Telephone | Gartic Phone | Schrijven → tekenen → beschrijven… |
 | Draw & Guess | Pictionary / skribbl | Live tekenen op de tv, rest raadt |
+| Reflex | Mario Party | Tik zodra je scherm groen wordt |
+| Tap Race | Mario Party | Tik zo snel je kan naar de finish |
+| Stopwatch | — | Stop de klok op precies X seconden (blind) |
+| Hot Potato | — | Geef de bom door met een woord uit de categorie |
+| Shake It | — | Schud je telefoon tot je ballon knapt |
+| Last Stand | Trivia Murder Party / Party Animals | Quiz met levens; geesten laten levenden schrikken |
 
 ## Extra's
 - Dieren-avatars met accessoires (kies je in de lobby op je telefoon)
