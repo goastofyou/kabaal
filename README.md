@@ -2,7 +2,7 @@
 
 Partygame in de browser: één scherm (tv/laptop) is de host, iedereen speelt mee met zijn telefoon via een kamercode of QR-code.
 
-11 rondes (kies ze in de lobby):
+17 rondes (kies ze in de lobby):
 
 | Ronde | Geïnspireerd op | Kort |
 |---|---|---|
@@ -18,14 +18,24 @@ Partygame in de browser: één scherm (tv/laptop) is de host, iedereen speelt me
 | Broken Telephone | Gartic Phone | Schrijven → tekenen → beschrijven… |
 | Draw & Guess | Pictionary / skribbl | Live tekenen op de tv, rest raadt |
 
+## Extra's
+- Dieren-avatars met accessoires (kies je in de lobby op je telefoon)
+- Emoji-reacties vanaf je telefoon die over het tv-scherm vliegen
+- Reeksbonus voor meerdere goede antwoorden op rij
+- Finale: laatste ronde telt ×3 (uit te zetten)
+- Teams: 2 of 3 teams, met teamscores
+- Awards aan het eind (Snelste vinger, Grootste bluffer, …)
+- Geluidseffecten en achtergrondmuziek (gesynthetiseerd, aan/uit bovenin)
+
 ## Modussen
 In de lobby kies je een modus of vink je zelf rondes aan (Custom):
-- **Party Mix**: Quiz, Punchline, Spectrum, The Faker, How Many of Us?, Draw & Guess
+- **Party Mix**: Quiz, Reflex, Punchline, Spectrum, The Faker, How Many of Us?, Draw & Guess
+- **Arcade Mode**: Reflex, Tap Race, Stopwatch, Hot Potato, Shake It
 - **Draw Mode**: Draw & Guess, Art Bluff, Broken Telephone
-- **Brain Mode**: Quiz, Bluff, Spectrum
+- **Brain Mode**: Quiz, Bluff, Spectrum, Last Stand
 - **Comedy Mode**: Punchline, Fifty-Fifty, Broken Telephone, Most Likely To
 - **Friends Mode**: Most Likely To, How Many of Us?, The Faker, Fifty-Fifty
-- **Everything**: alle 11 rondes
+- **Everything**: alle 17 rondes
 
 ## Instellingen
 Via *Instellingen* in de lobby: tijd per vraag (Kort/Normaal/Lang) en per ronde het aantal vragen, beurten of stappen. Het grote scherm onthoudt je keuzes.

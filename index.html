@@ -217,8 +217,71 @@ input{font:inherit;font-size:18px}
 .num{background:#fff;border:4px solid var(--ink);border-radius:16px;font-family:"Lilita One";font-size:30px;min-height:64px;box-shadow:0 4px 0 var(--ink)}
 .pmsg.fk{background:var(--co);color:#fff;border:4px solid var(--ink);border-radius:18px;padding:18px}
 
+/* ---------- avatars, reacties, arcade ---------- */
+.av.an{padding:0}.av.an svg{width:112%;height:112%;display:block;margin-top:-8%}
+.fly{position:fixed;bottom:-70px;z-index:30;display:grid;justify-items:center;pointer-events:none;animation:flyup 3s ease-out forwards}
+.fe{font-size:58px;line-height:1}.fly .av{width:34px;height:34px;border-width:2px}
+@keyframes flyup{to{transform:translateY(-78vh) rotate(10deg);opacity:0}}
+.finale{background:var(--co);color:#fff;font-family:"Lilita One";font-size:clamp(24px,3vw,46px);padding:8px 24px;border:4px solid var(--ink);border-radius:16px;transform:rotate(-3deg);box-shadow:var(--sh);animation:pop .6s}
+.finale.sm{font-size:22px;padding:6px 14px}
+.rpan{width:min(900px,100%);height:clamp(200px,38vh,360px);border:6px solid var(--ink);border-radius:28px;background:var(--co);display:grid;place-items:center;font-family:"Lilita One";font-size:clamp(60px,9vw,140px);color:#fff;box-shadow:var(--sh)}
+.rpan.go,.rbtn.go{background:#2ecc71}
+.cdown{font-family:"Lilita One";font-size:clamp(110px,18vw,260px);color:var(--co);text-shadow:6px 6px 0 var(--ink);line-height:1}
+.race{width:min(1200px,100%);display:grid;gap:10px}
+.lane{display:grid;grid-template-columns:minmax(0,1fr) 92px;gap:12px;align-items:center;font-weight:900;font-size:20px}
+.trk{position:relative;height:58px;background:repeating-linear-gradient(90deg,#fff 0 40px,#fff3c4 40px 80px);border:3px solid var(--ink);border-radius:14px}
+.runner{position:absolute;top:50%;transform:translateY(-50%);transition:left .15s linear}.runner .av{width:50px;height:50px}
+.flag{position:absolute;right:0;top:0;bottom:0;width:22px;background:repeating-conic-gradient(var(--ink) 0 25%,#fff 0 50%) 0 0/11px 11px;border-radius:0 10px 10px 0}
+.race.shake{grid-template-columns:repeat(auto-fit,minmax(130px,1fr));align-items:end;min-height:320px}
+.bal{display:grid;justify-items:center}
+.bb{width:120px;height:140px;border-radius:50% 50% 46% 46%;border:4px solid var(--ink);transform:scale(var(--s));transform-origin:bottom;transition:transform .15s;display:grid;place-items:center;font-family:"Lilita One";font-size:32px;color:#fff}
+.bs{width:3px;height:36px;background:var(--ink)}
+.bal.popd .bb{animation:popb .5s forwards}@keyframes popb{60%{transform:scale(1.4)}to{transform:scale(.7);opacity:.35}}
+.sclock{font-family:"Lilita One";font-size:clamp(90px,12vw,180px);font-variant-numeric:tabular-nums;line-height:1}.sclock.gone{color:var(--co)}.sclock.sm{font-size:72px}
+.pcat{font-size:clamp(22px,2.4vw,36px);font-weight:800}
+.bombwrap{display:grid;justify-items:center;gap:12px}.bomb{width:clamp(170px,22vw,290px);animation:wob .6s ease-in-out infinite alternate}
+@keyframes wob{to{transform:rotate(6deg) scale(1.05)}}
+.spark{animation:spk .25s infinite alternate;transform-origin:188px 24px}@keyframes spk{to{transform:scale(1.5)}}
+.holder{display:flex;align-items:center;gap:12px;font-size:clamp(24px,2.6vw,40px);flex-wrap:wrap;justify-content:center}.holder .av{width:66px;height:66px}
+.kaboom{font-family:"Lilita One";font-size:clamp(90px,14vw,200px);color:var(--co);text-shadow:6px 6px 0 var(--ink);animation:pop .5s;line-height:1}
+.lives{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.lv{position:relative;display:grid;justify-items:center;gap:4px;background:#fff;border:3px solid var(--ink);border-radius:14px;padding:8px 12px;font-weight:900;min-width:92px}
+.lv.ghost{opacity:.45;background:#e8e8f0}.lv.ok{background:#d4f5ef;transform:translateY(-4px)}.lv.hit{animation:shk .4s 2;background:#ffd6d6}
+@keyframes shk{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.lv em{position:absolute;top:-12px;right:-12px;background:#9b5de5;color:#fff;font-style:normal;font-family:"Lilita One";padding:2px 8px;border-radius:8px;transform:rotate(10deg)}
+.heart{width:22px;height:20px;vertical-align:middle;margin:0 1px}
+.awards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:14px;width:min(1200px,100%)}
+.award{display:flex;gap:14px;align-items:center;background:#fff;border:4px solid var(--ink);border-radius:18px;padding:14px 18px;box-shadow:var(--sh);text-align:left;opacity:0;animation:rise .6s forwards}
+.award .av{width:64px;height:64px;flex:none}.award b{font-family:"Lilita One";font-size:24px;display:block;line-height:1.1}.award small{opacity:.7;font-weight:700;display:block}
+.award.me{opacity:1;animation:none;margin-top:10px;justify-content:center;text-align:center}
+.streak{display:inline-block;margin-left:8px;background:var(--co);color:#fff;border-radius:999px;padding:2px 10px;font-size:.75em;font-weight:900}
+.pmsg .streak{margin:0}
+.tcol{border-left:6px solid var(--tc);padding-left:12px;display:grid;gap:6px;width:100%}.tcol>b{color:var(--tc);font-size:20px}.tcol .players{min-height:0}
+.tdot{width:30px;height:30px;border-radius:50%;border:3px solid var(--ink)}
+.pbtn{cursor:pointer}
+.rdet summary{cursor:pointer;font-weight:900;min-height:44px;display:flex;align-items:center;text-decoration:underline}
+.sgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}.sl{margin-bottom:6px}
+.sgrid .seg button{font-size:14px;padding:8px 6px}
+/* telefoon */
+.phone.hasemo{padding-bottom:100px}
+.emobar{position:fixed;left:50%;bottom:calc(10px + env(safe-area-inset-bottom));transform:translateX(-50%);display:flex;gap:4px;background:#fff;border:3px solid var(--ink);border-radius:999px;padding:5px 8px;box-shadow:0 4px 0 var(--ink);z-index:8}
+.emob{font-size:25px;width:46px;height:46px;border-radius:50%;background:transparent}.emob.bump{animation:pop .3s}
+.anpick{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.anb{aspect-ratio:1;border-radius:50%;border:3px solid var(--ink);padding:6px;display:grid;place-items:center;overflow:hidden}.anb svg{width:100%;height:100%}.anb.on{outline:5px solid var(--ink);outline-offset:2px}
+.accpick{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.accb{background:#fff;border:3px solid var(--ink);border-radius:999px;padding:8px 14px;font-weight:900;min-height:44px}.accb.on{background:var(--ink);color:var(--y)}
+.rbtn{width:100%;min-height:62vh;border-radius:28px;border:5px solid var(--ink);background:var(--co);color:#fff;font-family:"Lilita One";font-size:44px;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.rbtn.stopb{min-height:34vh;background:var(--ink);color:var(--y)}
+.tapb{width:min(82vw,360px);aspect-ratio:1;border-radius:50%;margin:10px auto;border:6px solid var(--ink);background:var(--co);color:#fff;display:grid;place-items:center;align-content:center;box-shadow:0 8px 0 var(--ink);touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.tapb b{font-family:"Lilita One";font-size:90px;line-height:1}.tapb span{font-weight:900}.tapb.hit{animation:tapp .12s}
+@keyframes tapp{50%{transform:scale(.94)}}
+.shbal{width:200px;height:230px;margin:10px auto;border-radius:50% 50% 46% 46%;border:5px solid var(--ink);transform:scale(calc(.35 + var(--p) * .85));transform-origin:bottom;transition:transform .15s}
+.boo{position:fixed;inset:0;z-index:40;background:var(--ink);color:#fff;display:grid;place-items:center;align-content:center;gap:10px;text-align:center;animation:pop .3s}.boo b{font-family:"Lilita One";font-size:110px;color:var(--y)}
+.plives{display:flex;justify-content:center;gap:4px}.plives .heart{width:34px;height:30px}
+.tbadge{color:#fff;font-weight:900;border-radius:999px;padding:2px 10px;font-size:13px}
+
 @media(max-width:900px){.lobby{grid-template-columns:minmax(0,1fr)}.drawWrap{grid-template-columns:minmax(0,1fr)}}
-@media(max-width:600px){.duel{grid-template-columns:minmax(0,1fr)}.vs{justify-self:center}.joinCard{grid-template-columns:minmax(0,1fr);justify-items:center;text-align:center}.opts{grid-template-columns:minmax(0,1fr)}.rounds{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:600px){.sgrid{grid-template-columns:minmax(0,1fr)}.duel{grid-template-columns:minmax(0,1fr)}.vs{justify-self:center}.joinCard{grid-template-columns:minmax(0,1fr);justify-items:center;text-align:center}.opts{grid-template-columns:minmax(0,1fr)}.rounds{grid-template-columns:minmax(0,1fr)}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -227,7 +290,7 @@ input{font:inherit;font-size:18px}
 <div id="conn" class="conn hide">Verbinding kwijt…</div>
 <script src="vendor/supabase.js"></script>
 <script src="vendor/qrcode.js"></script>
-<script src="data.js?v=6"></script>
-<script src="app.js?v=6"></script>
+<script src="data.js?v=8"></script>
+<script src="app.js?v=8"></script>
 </body>
 </html>

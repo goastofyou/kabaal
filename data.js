@@ -147,5 +147,12 @@ window.KABAAL_DATA = {
     "Heb jij weleens gelogen over je leeftijd?", "Kun jij een radslag?", "Heb jij weleens een plant laten doodgaan?", "Ben jij weleens je eigen verjaardag vergeten?",
     "Heb jij weleens een appje naar de verkeerde persoon gestuurd?", "Heb jij weleens gespijbeld?", "Lees jij de voorwaarden voordat je op 'akkoord' klikt?",
     "Snurk jij?", "Heb jij weleens stiekem een hap van andermans eten genomen?", "Heb jij weleens een tatoeage overwogen?"
+  ],
+  // Hot Potato: categorieën
+  potato: [
+    "Dieren met vier poten", "Iets wat je in de keuken vindt", "Landen in Europa", "Iets wat geel is", "Beroepen", "Groenten",
+    "Steden in Nederland", "Sporten", "Iets in de badkamer", "Automerken", "Snoep", "Muziekinstrumenten", "Plaatsen in Zeeland",
+    "IJssmaken", "Vogels", "Kledingstukken", "Iets wat je meeneemt op vakantie", "Fruit", "Iets met wielen", "Voornamen die met een M beginnen",
+    "Iets wat koud is", "Dingen op een verjaardag", "Zeedieren", "Iets in een supermarkt"
   ]
 };
