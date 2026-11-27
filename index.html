@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#ffd23f">
+<title>Kabaal — partygame</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 rx=%2210%22 fill=%22%23ffd23f%22/%3E%3Ctext x=%2250%25%22 y=%2230%22 text-anchor=%22middle%22 font-size=%2228%22 font-weight=%22900%22 fill=%22%2314213d%22 font-family=%22sans-serif%22%3EK%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+<style>
+/*
+VOICE: luid, vrolijk, spelshow op een zaterdagavond
+IDEA: een quizshowdecor met een gele studio-achtergrond en dikke stickers
+PICTURE: het spel zelf: grote kamercode, spelerstickers, gekleurde antwoordknoppen
+COLOUR and TYPE: zonnegeel #ffd23f, inktblauw #14213d, koraal #ff5a5f, teal #2ec4b6; Lilita One + Nunito
+LAYOUT: host = tv-scherm vol beeld; telefoon = één kolom met duimvriendelijke knoppen
+*/
+:root{--y:#ffd23f;--ink:#14213d;--co:#ff5a5f;--te:#2ec4b6;--bl:#3a6ff7;--paper:#fff8e1;--sh:0 6px 0 rgba(20,33,61,.9)}
+*{box-sizing:border-box;min-width:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{margin:0;background:var(--y);color:var(--ink);font:17px/1.45 Nunito,system-ui,sans-serif;overflow-x:clip}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background:
+ radial-gradient(circle at 12% 18%,rgba(255,255,255,.35) 0 90px,transparent 91px),
+ radial-gradient(circle at 88% 82%,rgba(255,255,255,.25) 0 140px,transparent 141px),
+ repeating-conic-gradient(from 0deg at 50% 120%,rgba(255,255,255,.10) 0 6deg,transparent 6deg 12deg)}
+h1,h2,h3,.disp{font-family:"Lilita One",Nunito,sans-serif;font-weight:400;letter-spacing:.5px;line-height:1.05;margin:0;text-wrap:balance}
+button{font:inherit;color:inherit;cursor:pointer;border:0}
+input{font:inherit;font-size:18px}
+.hide{display:none!important}
+#app{position:relative;min-height:100%}
+
+/* stickers & knoppen */
+.card{background:#fff;border:4px solid var(--ink);border-radius:22px;box-shadow:var(--sh)}
+.btn{background:var(--ink);color:#fff;border-radius:16px;padding:14px 26px;font-weight:900;font-size:19px;min-height:52px;box-shadow:0 5px 0 #000;transition:transform .08s}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 #000}
+.btn.co{background:var(--co)}.btn.te{background:var(--te);color:var(--ink)}.btn.ghost{background:#fff;color:var(--ink);border:3px solid var(--ink)}
+.btn:disabled{opacity:.45}
+.btn:focus-visible,input:focus-visible{outline:4px solid var(--bl);outline-offset:3px}
+.field{width:100%;padding:14px 16px;border:4px solid var(--ink);border-radius:16px;background:#fff;color:var(--ink);font-weight:800;font-size:20px;min-height:56px}
+.logo{font-family:"Lilita One";font-size:clamp(44px,6vw,84px);color:var(--ink);text-shadow:4px 4px 0 var(--co);transform:rotate(-3deg);display:inline-block}
+.av{display:inline-grid;place-items:center;width:44px;height:44px;border-radius:50%;border:3px solid var(--ink);font-family:"Lilita One";font-size:20px;color:#fff;flex:none}
+
+/* ---------- START ---------- */
+.start{min-height:100vh;display:grid;place-items:center;padding:24px}
+.start .box{width:min(460px,100%);display:grid;gap:18px;text-align:center}
+.start .tag{font-weight:800;font-size:18px;margin-top:-6px}
+.start .or{font-weight:800;opacity:.7}
+.codeIn{text-transform:uppercase;letter-spacing:10px;text-align:center;font-family:"Lilita One";font-size:34px}
+
+/* ---------- HOST ---------- */
+.host{min-height:100vh;padding:clamp(18px,2.4vw,40px);display:grid;grid-template-rows:auto 1fr auto;gap:clamp(14px,2vw,28px)}
+.hbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.hbar .logo{font-size:clamp(34px,3.6vw,56px)}
+.pill{background:#fff;border:3px solid var(--ink);border-radius:999px;padding:6px 16px;font-weight:900;font-size:18px;white-space:nowrap}
+.hstage{display:grid;align-content:center}
+.lobby{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(18px,3vw,48px);align-items:start}
+.joinCard{padding:clamp(20px,2.6vw,36px);display:grid;grid-template-columns:auto minmax(0,1fr);gap:24px;align-items:center}
+.joinCard .qr{width:clamp(150px,15vw,220px);aspect-ratio:1;background:#fff;border-radius:12px;display:grid;place-items:center}
+.joinCard .qr svg{width:100%;height:100%}
+.bigcode{font-family:"Lilita One";font-size:clamp(70px,9vw,150px);letter-spacing:10px;line-height:.9;color:var(--co);text-shadow:4px 4px 0 var(--ink)}
+.url{font-weight:800;font-size:clamp(15px,1.3vw,20px);word-break:break-all}
+.players{display:flex;flex-wrap:wrap;gap:12px;align-content:flex-start;min-height:120px}
+.chip{display:flex;align-items:center;gap:10px;background:#fff;border:3px solid var(--ink);border-radius:999px;padding:6px 18px 6px 6px;font-weight:900;font-size:20px;box-shadow:0 4px 0 var(--ink);animation:pop .35s cubic-bezier(.3,1.6,.5,1)}
+.chip.off{opacity:.4}
+@keyframes pop{from{transform:scale(.3);opacity:0}}
+.rounds{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:6px}
+.rt{display:flex;gap:10px;align-items:center;background:#fff;border:3px solid var(--ink);border-radius:14px;padding:10px 14px;font-weight:800;cursor:pointer;min-height:52px}
+.rt input{width:22px;height:22px;accent-color:var(--co)}
+.muted{opacity:.72;font-weight:700}
+.hfoot{display:flex;gap:12px;justify-content:flex-end;flex-wrap:wrap;align-items:center}
+
+.qwrap{display:grid;gap:clamp(16px,2.4vw,36px);text-align:center;justify-items:center}
+.rlabel{background:var(--ink);color:var(--y);padding:6px 18px;border-radius:999px;font-weight:900;font-size:clamp(15px,1.4vw,20px);transform:rotate(-2deg)}
+.qtext{font-size:clamp(34px,4.4vw,72px);max-width:22ch}
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(12px,1.6vw,22px);width:min(1200px,100%)}
+.opt{display:flex;align-items:center;gap:16px;padding:clamp(16px,2vw,28px);border:4px solid var(--ink);border-radius:20px;color:#fff;font-weight:900;font-size:clamp(22px,2.2vw,36px);text-align:left;box-shadow:var(--sh);transition:opacity .3s,transform .3s}
+.opt svg{width:clamp(30px,3vw,46px);height:auto;flex:none}
+.o0{background:var(--co)}.o1{background:var(--bl)}.o2{background:#f39c12}.o3{background:var(--te);color:var(--ink)}
+.opt.dim{opacity:.25;transform:scale(.97)}
+.opt .n{margin-left:auto;background:rgba(0,0,0,.25);border-radius:999px;padding:2px 14px;font-size:.8em}
+.timer{position:relative;width:clamp(76px,7vw,110px);aspect-ratio:1}
+.timer svg{width:100%;height:100%;transform:rotate(-90deg)}
+.timer b{position:absolute;inset:0;display:grid;place-items:center;font-family:"Lilita One";font-size:clamp(28px,2.8vw,44px)}
+.status{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.status .av{width:38px;height:38px;font-size:17px;opacity:.3;transition:opacity .2s,transform .2s}
+.status .av.ok{opacity:1;transform:translateY(-4px)}
+.bars{display:grid;gap:12px;width:min(980px,100%)}
+.bar{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;font-weight:900;font-size:clamp(18px,1.8vw,28px)}
+.bar .tr{height:clamp(30px,3vw,46px);background:rgba(255,255,255,.6);border:3px solid var(--ink);border-radius:12px;overflow:hidden}
+.bar .fl{height:100%;background:var(--co);width:0;transition:width 1s cubic-bezier(.2,.8,.2,1)}
+.bar.win .fl{background:var(--te)}
+.voters{display:flex;gap:4px;flex-wrap:wrap}
+.voters .av{width:30px;height:30px;font-size:14px;border-width:2px}
+.bopts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:14px;width:min(1200px,100%)}
+.bopt{background:#fff;border:4px solid var(--ink);border-radius:18px;padding:18px 22px;font-weight:900;font-size:clamp(20px,2vw,32px);box-shadow:var(--sh);text-align:left;display:grid;gap:8px}
+.bopt.real{background:var(--te)}
+.bopt small{font-size:15px;font-weight:800;opacity:.8}
+.drawWrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,320px);gap:clamp(14px,2vw,28px);width:min(1400px,100%);align-items:start}
+.cv{width:100%;aspect-ratio:4/3;background:#fff;border:4px solid var(--ink);border-radius:20px;box-shadow:var(--sh);display:block;touch-action:none}
+.drawWrap .cv{width:min(100%,calc((100vh - 400px) * 4 / 3));min-width:280px;justify-self:center}
+.gains{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.feed{display:grid;gap:8px;max-height:60vh;overflow:hidden;align-content:start}
+.feed div{background:#fff;border:3px solid var(--ink);border-radius:12px;padding:8px 12px;font-weight:800;animation:pop .3s}
+.feed .hit{background:var(--te)}
+.hint{font-family:"Lilita One";font-size:clamp(30px,3vw,52px);letter-spacing:8px}
+.board{display:grid;gap:10px;width:min(820px,100%)}
+.row{display:grid;grid-template-columns:48px auto minmax(0,1fr) auto;gap:14px;align-items:center;background:#fff;border:4px solid var(--ink);border-radius:18px;padding:10px 18px;box-shadow:0 4px 0 var(--ink);font-weight:900;font-size:clamp(20px,2vw,30px);animation:pop .4s backwards}
+.row{text-align:left}.row.first .gain{color:#fff}
+.row .pos{font-family:"Lilita One";font-size:1.3em}
+.row .gain{color:#1b8a7f;font-size:.75em;margin-right:12px}
+.row .pts{font-family:"Lilita One";font-variant-numeric:tabular-nums}
+.row.first{background:var(--co);color:#fff}
+.intro .disp{font-size:clamp(60px,9vw,150px);color:#fff;text-shadow:6px 6px 0 var(--ink);transform:rotate(-3deg)}
+.intro p{font-size:clamp(20px,2vw,30px);font-weight:800;max-width:40ch;margin:0 auto}
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:clamp(10px,2vw,30px)}
+.pod{display:grid;justify-items:center;gap:10px;font-weight:900;font-size:clamp(18px,1.8vw,28px)}
+.pod .blk{width:clamp(110px,12vw,190px);background:var(--ink);color:var(--y);border-radius:18px 18px 0 0;display:grid;place-items:start center;padding-top:14px;font-family:"Lilita One";font-size:clamp(40px,4vw,70px)}
+.pod .av{width:clamp(64px,6vw,96px);height:clamp(64px,6vw,96px);font-size:clamp(28px,3vw,44px);border-width:4px}
+
+/* ---------- TELEFOON ---------- */
+.phone{min-height:100vh;min-height:100dvh;padding:calc(14px + env(safe-area-inset-top)) 16px calc(18px + env(safe-area-inset-bottom));display:grid;grid-template-rows:auto 1fr;gap:14px;max-width:560px;margin:0 auto}
+.ptop{display:flex;align-items:center;gap:10px;background:#fff;border:3px solid var(--ink);border-radius:16px;padding:8px 12px;font-weight:900}
+.ptop .sc{margin-left:auto;font-family:"Lilita One";font-size:22px;font-variant-numeric:tabular-nums}
+.ptop .tm{font-family:"Lilita One";font-size:22px;background:var(--ink);color:var(--y);border-radius:10px;padding:2px 10px;min-width:48px;text-align:center}
+.pbody{display:grid;align-content:start;gap:14px}
+.pmsg{text-align:center;display:grid;gap:12px;padding:30px 10px;justify-items:center}
+.pmsg h2{font-size:34px}
+.pq{font-size:24px}
+.popts{display:grid;gap:12px}
+.popts .opt{font-size:21px;padding:16px 18px;min-height:76px;width:100%}
+.popts .opt svg{width:30px}
+.popts .bopt{font-size:20px;padding:16px 18px;min-height:64px;width:100%;text-align:left}
+.pick{display:flex;align-items:center;gap:12px;width:100%;background:#fff;border:4px solid var(--ink);border-radius:16px;padding:10px 14px;font-weight:900;font-size:20px;min-height:64px;box-shadow:0 4px 0 var(--ink)}
+.tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.sw{width:44px;height:44px;border-radius:50%;border:3px solid var(--ink)}
+.sw.on{outline:4px solid var(--ink);outline-offset:2px}
+.word{font-family:"Lilita One";font-size:34px;text-align:center;background:#fff;border:4px solid var(--ink);border-radius:16px;padding:6px}
+.flash{animation:fl .5s}
+@keyframes fl{50%{transform:scale(1.06)}}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 20px;border-radius:14px;font-weight:800;z-index:9;max-width:90vw;text-align:center}
+.conn{position:fixed;top:8px;right:8px;z-index:9;background:var(--co);color:#fff;font-weight:900;border-radius:999px;padding:4px 12px;font-size:14px}
+
+@media(max-width:900px){.lobby{grid-template-columns:minmax(0,1fr)}.drawWrap{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:600px){.joinCard{grid-template-columns:minmax(0,1fr);justify-items:center;text-align:center}.opts{grid-template-columns:minmax(0,1fr)}.rounds{grid-template-columns:minmax(0,1fr)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="conn" class="conn hide">Verbinding kwijt…</div>
+<script src="vendor/supabase.js"></script>
+<script src="vendor/qrcode.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
