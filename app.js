@@ -44,6 +44,16 @@ const MODES = {
   tele:  { t: "Broken Telephone", d: "Schrijf een zin, teken andermans zin, beschrijf andermans tekening… Aan het eind zie je wat ervan geworden is.", min: 3 },
   draw:  { t: "Draw & Guess", d: "Eén speler tekent op zijn telefoon, de rest raadt zo snel mogelijk wat het is.", min: 2, def: true }
 };
+/* Modussen: kant-en-klare selecties van rondes. min = geschatte minuten per ronde bij ±4 spelers */
+const MIN = { quiz: 3, who: 2.5, quip: 5, wave: 4, fake: 3, count: 2.5, bluff: 4, split: 4, art: 6, tele: 6, draw: 6 };
+const PRESETS = {
+  party:   { t: "Party Mix", d: "Een mix van alles: snel, grappig en een beetje tekenen.", r: ["quiz", "quip", "wave", "fake", "count", "draw"] },
+  draw:    { t: "Draw Mode", d: "Alle tekenrondes.", r: ["draw", "art", "tele"] },
+  brain:   { t: "Brain Mode", d: "Kennis, inschatten en bluffen met echte feitjes.", r: ["quiz", "bluff", "wave"] },
+  comedy:  { t: "Comedy Mode", d: "Grappige antwoorden verzinnen en elkaar laten lachen.", r: ["quip", "split", "tele", "who"] },
+  friends: { t: "Friends Mode", d: "Alles over elkaar: hoe goed ken je je vrienden?", r: ["who", "count", "fake", "split"] },
+  all:     { t: "Everything", d: "Alle 11 rondes achter elkaar. Reken op een lange avond!", r: Object.keys(MODES) }
+};
 function toast(msg, ms = 2600) {
   const t = document.createElement("div"); t.className = "toast"; t.textContent = msg; document.body.appendChild(t);
   setTimeout(() => t.remove(), ms);
@@ -144,7 +154,21 @@ function startScreen() {
    HOST
    ===================================================================== */
 const H = { players: {}, order: [], phase: "lobby", plan: [], ri: -1, qi: -1, endsAt: 0, dur: 0, ans: {}, gain: {}, rgain: {},
-  rounds: Object.fromEntries(Object.keys(MODES).map(k => [k, !!MODES[k].def])), strokes: [], smap: {}, feed: [], guessed: {}, t: null, next: null };
+  rounds: initRounds(), strokes: [], smap: {}, feed: [], guessed: {}, t: null, next: null };
+function initRounds() {
+  let saved = null; try { saved = JSON.parse(store.get("kabaal:rounds") || "null"); } catch (e) {}
+  return Object.fromEntries(Object.keys(MODES).map(k => [k, saved && typeof saved[k] === "boolean" ? saved[k] : PRESETS.party.r.includes(k)]));
+}
+function syncPresets() {
+  const on = Object.keys(MODES).filter(k => H.rounds[k]);
+  const match = Object.keys(PRESETS).find(p => PRESETS[p].r.length === on.length && PRESETS[p].r.every(k => H.rounds[k]));
+  app.querySelectorAll("[data-p]").forEach(b => b.classList.toggle("on", b.dataset.p === (match || "custom")));
+  app.querySelectorAll("[data-r]").forEach(c => c.checked = !!H.rounds[c.dataset.r]);
+  const min = Math.round(on.reduce((a, k) => a + MIN[k], 0) / 5) * 5;
+  const el = document.getElementById("pdesc");
+  if (el) el.textContent = (match ? PRESETS[match].d + " " : on.length ? "Je eigen selectie. " : "") + (on.length ? `${on.length} ${on.length === 1 ? "ronde" : "rondes"}, ongeveer ${Math.max(5, min)} minuten.` : "Kies minstens één ronde.");
+  store.set("kabaal:rounds", JSON.stringify(H.rounds));
+}
 const key = () => H.phase + ":" + H.ri + ":" + H.qi;
 const R = () => H.plan[H.ri];
 const IT = () => R() && R().items[H.qi];
@@ -529,7 +553,9 @@ function renderHost() {
       <div style="display:grid;gap:18px">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="font-size:clamp(30px,3vw,46px)">Wie doet er mee?</h2><span class="pill" id="pcount"></span></div>
         <div class="players" id="players"></div>
-        <div><div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><h3 style="font-size:24px">Spelrondes</h3><button class="lnk" id="allr" type="button">Alles aan/uit</button></div>
+        <div><h3 style="font-size:24px">Kies een modus</h3>
+        <div class="presets">${Object.keys(PRESETS).map(p => `<button class="preset" type="button" data-p="${p}">${esc(PRESETS[p].t)}</button>`).join("")}<button class="preset" type="button" data-p="custom">Custom</button></div>
+        <div class="muted" id="pdesc" style="margin:8px 0 10px"></div>
         <div class="rounds">${Object.keys(MODES).map(k => `<label class="rt" data-m="${k}"><input type="checkbox" data-r="${k}" ${H.rounds[k] ? "checked" : ""}><span>${esc(MODES[k].t)}${MODES[k].min > 2 ? `<small>vanaf ${MODES[k].min} spelers</small>` : ""}</span></label>`).join("")}</div></div>
       </div></div>`;
   } else if (ph === "intro") {
@@ -619,8 +645,12 @@ function renderHost() {
   const on = (id, f) => { const e = document.getElementById(id); if (e) e.addEventListener("click", f); };
   on("startb", startGame); on("skipb", skip);
   on("again", () => { H.plan = []; H.ri = -1; H.qi = -1; H.order.forEach(id => H.players[id].score = 0); setPhase("lobby", 0, null); });
-  on("allr", () => { const v = !Object.values(H.rounds).every(Boolean); Object.keys(H.rounds).forEach(k => H.rounds[k] = v); app.querySelectorAll("[data-r]").forEach(c => c.checked = v); });
-  app.querySelectorAll("[data-r]").forEach(c => c.addEventListener("change", () => { H.rounds[c.dataset.r] = c.checked; }));
+  app.querySelectorAll("[data-p]").forEach(b => b.addEventListener("click", () => {
+    if (b.dataset.p === "custom") { toast("Vink hieronder zelf de rondes aan die je wilt spelen."); return; }
+    Object.keys(MODES).forEach(k => H.rounds[k] = PRESETS[b.dataset.p].r.includes(k)); syncPresets();
+  }));
+  app.querySelectorAll("[data-r]").forEach(c => c.addEventListener("change", () => { H.rounds[c.dataset.r] = c.checked; syncPresets(); }));
+  if (ph === "lobby") syncPresets();
   live();
   requestAnimationFrame(() => app.querySelectorAll(".fl[data-w]").forEach(f => f.style.width = f.dataset.w + "%"));
   if (ph === "draw" || ph === "draw_r") requestAnimationFrame(redraw);

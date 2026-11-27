@@ -18,6 +18,15 @@ Partygame in de browser: één scherm (tv/laptop) is de host, iedereen speelt me
 | Broken Telephone | Gartic Phone | Schrijven → tekenen → beschrijven… |
 | Draw & Guess | Pictionary / skribbl | Live tekenen op de tv, rest raadt |
 
+## Modussen
+In de lobby kies je een modus of vink je zelf rondes aan (Custom):
+- **Party Mix**: Quiz, Punchline, Spectrum, The Faker, How Many of Us?, Draw & Guess
+- **Draw Mode**: Draw & Guess, Art Bluff, Broken Telephone
+- **Brain Mode**: Quiz, Bluff, Spectrum
+- **Comedy Mode**: Punchline, Fifty-Fifty, Broken Telephone, Most Likely To
+- **Friends Mode**: Most Likely To, How Many of Us?, The Faker, Fifty-Fifty
+- **Everything**: alle 11 rondes
+
 - Spelen: open de GitHub Pages-link, klik *Start een spel op dit scherm*, en laat spelers de QR-code scannen.
 - Realtime verbinding via Supabase Realtime (broadcast) — geen database nodig.
 - Vragen en woorden aanpassen: `data.js`.
