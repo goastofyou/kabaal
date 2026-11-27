@@ -54,6 +54,18 @@ const PRESETS = {
   friends: { t: "Friends Mode", d: "Alles over elkaar: hoe goed ken je je vrienden?", r: ["who", "count", "fake", "split"] },
   all:     { t: "Everything", d: "Alle 11 rondes achter elkaar. Reken op een lange avond!", r: Object.keys(MODES) }
 };
+/* Instellingen per ronde (aantallen) */
+const OPTS = {
+  quiz:  { l: "Aantal vragen", min: 3, max: 15, def: 5 },
+  who:   { l: "Aantal stellingen", min: 2, max: 10, def: 4 },
+  wave:  { l: "Aantal beurten", min: 2, max: 8, def: 4 },
+  fake:  { l: "Aantal rondes", min: 1, max: 5, def: 2 },
+  count: { l: "Aantal vragen", min: 2, max: 10, def: 4 },
+  bluff: { l: "Aantal vragen", min: 2, max: 8, def: 3 },
+  tele:  { l: "Stappen per verhaal", min: 3, max: 8, def: 4 },
+  draw:  { l: "Tekenbeurten per speler", min: 1, max: 3, def: 1 }
+};
+const SPEEDS = [[0.7, "Kort"], [1, "Normaal"], [1.5, "Lang"]];
 function toast(msg, ms = 2600) {
   const t = document.createElement("div"); t.className = "toast"; t.textContent = msg; document.body.appendChild(t);
   setTimeout(() => t.remove(), ms);
@@ -154,7 +166,15 @@ function startScreen() {
    HOST
    ===================================================================== */
 const H = { players: {}, order: [], phase: "lobby", plan: [], ri: -1, qi: -1, endsAt: 0, dur: 0, ans: {}, gain: {}, rgain: {},
-  rounds: initRounds(), strokes: [], smap: {}, feed: [], guessed: {}, t: null, next: null };
+  rounds: initRounds(), cfg: initCfg(), strokes: [], smap: {}, feed: [], guessed: {}, t: null, next: null };
+function initCfg() {
+  let c = null; try { c = JSON.parse(store.get("kabaal:cfg") || "null"); } catch (e) {}
+  const cfg = {}; for (const k in OPTS) { const v = c && +c[k]; cfg[k] = v >= OPTS[k].min && v <= OPTS[k].max ? v : OPTS[k].def; }
+  cfg.speed = c && SPEEDS.some(x => x[0] === c.speed) ? c.speed : 1;
+  return cfg;
+}
+const T = ms => Math.round(ms * H.cfg.speed / 1000) * 1000;
+const C = k => H.cfg[k];
 function initRounds() {
   let saved = null; try { saved = JSON.parse(store.get("kabaal:rounds") || "null"); } catch (e) {}
   return Object.fromEntries(Object.keys(MODES).map(k => [k, saved && typeof saved[k] === "boolean" ? saved[k] : PRESETS.party.r.includes(k)]));
@@ -164,10 +184,10 @@ function syncPresets() {
   const match = Object.keys(PRESETS).find(p => PRESETS[p].r.length === on.length && PRESETS[p].r.every(k => H.rounds[k]));
   app.querySelectorAll("[data-p]").forEach(b => b.classList.toggle("on", b.dataset.p === (match || "custom")));
   app.querySelectorAll("[data-r]").forEach(c => c.checked = !!H.rounds[c.dataset.r]);
-  const min = Math.round(on.reduce((a, k) => a + MIN[k], 0) / 5) * 5;
+  const min = Math.round(on.reduce((a, k) => a + MIN[k] * (OPTS[k] ? H.cfg[k] / OPTS[k].def : 1), 0) * (0.55 + 0.45 * H.cfg.speed) / 5) * 5;
   const el = document.getElementById("pdesc");
   if (el) el.textContent = (match ? PRESETS[match].d + " " : on.length ? "Je eigen selectie. " : "") + (on.length ? `${on.length} ${on.length === 1 ? "ronde" : "rondes"}, ongeveer ${Math.max(5, min)} minuten.` : "Kies minstens één ronde.");
-  store.set("kabaal:rounds", JSON.stringify(H.rounds));
+  store.set("kabaal:rounds", JSON.stringify(H.rounds)); store.set("kabaal:cfg", JSON.stringify(H.cfg));
 }
 const key = () => H.phase + ":" + H.ri + ":" + H.qi;
 const R = () => H.plan[H.ri];
@@ -264,22 +284,22 @@ function buildPlan() {
   for (const k of Object.keys(MODES)) {
     if (!H.rounds[k]) continue;
     if (n < MODES[k].min) { skipped.push(MODES[k].t); continue; }
-    if (k === "quiz") plan.push({ type: k, items: pickN(D.quiz, 5).map(a => { const opts = shuffle(a.slice(1, 5)); return { q: a[0], opts, c: opts.indexOf(a[1]) }; }) });
-    if (k === "who") plan.push({ type: k, items: pickN(D.who, 4).map(q => ({ q })) });
-    if (k === "bluff") plan.push({ type: k, items: pickN(D.bluff, 3).map(a => ({ q: a[0], real: a[1], alt: a.slice(2) })) });
-    if (k === "draw") { const words = shuffle(D.draw); plan.push({ type: k, items: ids.slice(0, 6).map((id, i) => ({ drawer: id, word: words[i] })) }); }
+    if (k === "quiz") plan.push({ type: k, items: pickN(D.quiz, C("quiz")).map(a => { const opts = shuffle(a.slice(1, 5)); return { q: a[0], opts, c: opts.indexOf(a[1]) }; }) });
+    if (k === "who") plan.push({ type: k, items: pickN(D.who, C("who")).map(q => ({ q })) });
+    if (k === "bluff") plan.push({ type: k, items: pickN(D.bluff, C("bluff")).map(a => ({ q: a[0], real: a[1], alt: a.slice(2) })) });
+    if (k === "draw") { const words = shuffle(D.draw), order = []; for (let r = 0; r < C("draw"); r++) order.push(...shuffle(ids)); plan.push({ type: k, items: order.map((id, i) => ({ drawer: id, word: words[i % words.length] })) }); }
     if (k === "quip") {
       const qs = pickN(D.quip, n), as = {}; ids.forEach(id => as[id] = []);
       const items = qs.map((q, i) => { const by = [ids[i], ids[(i + 1) % n]]; by.forEach(b => as[b].push(i)); return { q, by, pi: i }; });
       plan.push({ type: k, qs, as, answers: qs.map(() => ({})), items: [{ write: true }, ...shuffle(items)] });
     }
-    if (k === "wave") { const sp = pickN(D.wave, 4); plan.push({ type: k, items: ids.slice(0, Math.min(4, n)).map((psy, i) => ({ psy, l: sp[i][0], r: sp[i][1], tgt: 8 + Math.round(Math.random() * 84) })) }); }
-    if (k === "fake") plan.push({ type: k, items: pickN(D.fake, 2).map(([cat, word]) => ({ cat, word, fk: pick(ids) })) });
-    if (k === "count") plan.push({ type: k, items: pickN(D.count, 4).map(q => ({ q })) });
+    if (k === "wave") { const sp = pickN(D.wave, C("wave")); plan.push({ type: k, items: sp.map((s, i) => ({ psy: ids[i % n], l: s[0], r: s[1], tgt: 8 + Math.round(Math.random() * 84) })) }); }
+    if (k === "fake") plan.push({ type: k, items: pickN(D.fake, C("fake")).map(([cat, word]) => ({ cat, word, fk: pick(ids) })) });
+    if (k === "count") plan.push({ type: k, items: pickN(D.count, C("count")).map(q => ({ q })) });
     if (k === "split") { const ds = shuffle(D.split), pr = {}; ids.forEach((id, i) => pr[id] = ds[i % ds.length]); plan.push({ type: k, pr, items: [{ write: true }] }); }
     if (k === "art") { const ps = shuffle(D.art), pr = {}; ids.forEach((id, i) => pr[id] = ps[i % ps.length]); plan.push({ type: k, pr, items: [{ draw: true }] }); }
     if (k === "tele") {
-      const L = Math.min(Math.max(n, 3), 6);
+      const L = C("tele");
       plan.push({ type: k, ids: ids.slice(), L, chains: ids.map(() => []), items: [...Array.from({ length: L }, (_, s) => ({ step: s })), ...ids.map((_, c) => ({ show: c }))] });
     }
   }
@@ -287,6 +307,7 @@ function buildPlan() {
   return plan;
 }
 function startGame() {
+  const sm = document.getElementById("setm"); if (sm) sm.remove();
   if (active().length < 2) { toast("Je hebt minstens 2 spelers nodig."); return; }
   if (!Object.values(H.rounds).some(Boolean)) { toast("Kies minstens één spelronde."); return; }
   H.order.forEach(id => H.players[id].score = 0);
@@ -304,46 +325,46 @@ function nextItem() {
   const r = R();
   if (H.qi >= r.items.length) return setPhase("scores", 9000, nextRound);
   const it = IT(), t = r.type;
-  if (t === "quiz") return setPhase("quiz", 20000, revealQuiz);
-  if (t === "who") return setPhase("who", 20000, revealWho);
-  if (t === "bluff") return setPhase("bluff_w", 50000, bluffVote);
+  if (t === "quiz") return setPhase("quiz", T(20000), revealQuiz);
+  if (t === "who") return setPhase("who", T(20000), revealWho);
+  if (t === "bluff") return setPhase("bluff_w", T(50000), bluffVote);
   if (t === "draw") {
     if (!H.players[it.drawer] || !active().includes(it.drawer)) return nextItem();
     H.strokes = []; H.smap = {}; H.feed = []; H.guessed = {};
-    return setPhase("draw", 80000, () => setPhase("draw_r", 6000, nextItem));
+    return setPhase("draw", T(80000), () => setPhase("draw_r", 6000, nextItem));
   }
   if (t === "quip") {
-    if (it.write) return setPhase("quip_w", 80000, nextItem);
+    if (it.write) return setPhase("quip_w", T(80000), nextItem);
     const a = r.answers[it.pi]; it.a = it.by.map(id => a[id] || "(geen antwoord)");
-    return setPhase("quip_v", 20000, revealQuip);
+    return setPhase("quip_v", T(20000), revealQuip);
   }
   if (t === "wave") {
     if (!active().includes(it.psy)) return nextItem();
-    return setPhase("wave_c", 45000, () => { if (!it.clue) it.clue = "(geen hint)"; H.ans = {}; setPhase("wave_g", 25000, revealWave); });
+    return setPhase("wave_c", T(45000), () => { if (!it.clue) it.clue = "(geen hint)"; H.ans = {}; setPhase("wave_g", T(25000), revealWave); });
   }
   if (t === "fake") {
     if (!active().includes(it.fk)) it.fk = pick(active());
-    return setPhase("fake_h", 45000, () => { it.hints = { ...H.ans }; H.ans = {}; setPhase("fake_v", 35000, revealFake); });
+    return setPhase("fake_h", T(45000), () => { it.hints = { ...H.ans }; H.ans = {}; setPhase("fake_v", T(35000), revealFake); });
   }
-  if (t === "count") return setPhase("count_a", 25000, revealCount);
+  if (t === "count") return setPhase("count_a", T(25000), revealCount);
   if (t === "split") {
-    if (it.write) return setPhase("split_w", 50000, () => {
+    if (it.write) return setPhase("split_w", T(50000), () => {
       shuffle(Object.entries(H.ans)).forEach(([id, a]) => r.items.push({ by: id, text: r.pr[id].replace("___", a) }));
       nextItem();
     });
-    return setPhase("split_v", 15000, revealSplit);
+    return setPhase("split_v", T(15000), revealSplit);
   }
   if (t === "art") {
-    if (it.draw) return setPhase("art_d", 80000, () => {
+    if (it.draw) return setPhase("art_d", T(80000), () => {
       shuffle(Object.entries(H.ans)).forEach(([id, s]) => { if (s.length) r.items.push({ artist: id, strokes: s, real: r.pr[id] }); });
       nextItem();
     });
-    return setPhase("art_w", 40000, artVote);
+    return setPhase("art_w", T(40000), artVote);
   }
   if (t === "tele") {
     if (it.step !== undefined) {
       const kind = it.step % 2 ? "d" : "t";
-      setPhase("tele_s", kind === "d" ? 75000 : it.step ? 40000 : 45000, () => {
+      setPhase("tele_s", T(kind === "d" ? 75000 : it.step ? 40000 : 45000), () => {
         r.ids.forEach((id, pi) => { const c = chainOf(pi, it.step); if (!r.chains[c][it.step]) r.chains[c][it.step] = { by: id, kind, v: kind === "t" ? "(niks ingevuld)" : [] }; });
         nextItem();
       });
@@ -417,13 +438,13 @@ function makeOpts(it, fakes, alts) {
   opts.push({ text: it.real, by: [], real: true });
   return shuffle(opts);
 }
-function bluffVote() { const it = IT(); it.opts = makeOpts(it, H.ans, it.alt); H.ans = {}; setPhase("bluff_v", 30000, revealBluff); }
+function bluffVote() { const it = IT(); it.opts = makeOpts(it, H.ans, it.alt); H.ans = {}; setPhase("bluff_v", T(30000), revealBluff); }
 function revealBluff() {
   const it = IT();
   for (const [id, v] of Object.entries(H.ans)) { const o = it.opts[v]; if (!o) continue; if (o.real) give(id, 500); else o.by.forEach(a => a !== id && give(a, 250)); }
   setPhase("bluff_r", 12000, nextItem);
 }
-function artVote() { const it = IT(); it.opts = makeOpts(it, H.ans, pickN(D.art.filter(a => a !== it.real), 2)); H.ans = {}; setPhase("art_v", 25000, revealArt); }
+function artVote() { const it = IT(); it.opts = makeOpts(it, H.ans, pickN(D.art.filter(a => a !== it.real), 2)); H.ans = {}; setPhase("art_v", T(25000), revealArt); }
 function revealArt() {
   const it = IT();
   for (const [id, v] of Object.entries(H.ans)) { const o = it.opts[v]; if (!o) continue; if (o.real) { give(id, 500); give(it.artist, 250); } else o.by.forEach(a => a !== id && give(a, 250)); }
@@ -523,6 +544,26 @@ function liveLobby() {
   const sb = document.getElementById("startb"); if (sb) sb.disabled = act.length < 2;
   app.querySelectorAll(".rt").forEach(l => l.classList.toggle("few", act.length > 0 && act.length < MODES[l.dataset.m].min));
 }
+function openSettings() {
+  const old = document.getElementById("setm"); if (old) old.remove();
+  const m = document.createElement("div"); m.id = "setm"; m.className = "modal";
+  const draw = () => {
+    m.innerHTML = `<div class="card sheet" role="dialog" aria-label="Instellingen"><h2 style="font-size:32px">Instellingen</h2>
+      <div><div class="b" style="margin-bottom:6px">Tijd per vraag</div><div class="seg">${SPEEDS.map(([v, l]) => `<button type="button" data-sp="${v}" class="${H.cfg.speed === v ? "on" : ""}">${l}</button>`).join("")}</div></div>
+      <div>${Object.keys(OPTS).map(k => `<div class="optrow ${H.rounds[k] ? "" : "dim"}"><div><b>${esc(MODES[k].t)}</b><div class="muted" style="font-size:14px">${esc(OPTS[k].l)}${H.rounds[k] ? "" : " · nu niet gekozen"}</div></div>
+        <div class="stp"><button type="button" data-k="${k}" data-d="-1" aria-label="Minder" ${H.cfg[k] <= OPTS[k].min ? "disabled" : ""}>−</button><b>${H.cfg[k]}</b><button type="button" data-k="${k}" data-d="1" aria-label="Meer" ${H.cfg[k] >= OPTS[k].max ? "disabled" : ""}>+</button></div></div>`).join("")}</div>
+      <div class="muted" style="font-size:14px">Bij Punchline, Fifty-Fifty en Art Bluff doet iedereen één keer mee per ronde.</div>
+      <div class="muted b" id="sdur"></div>
+      <div style="display:flex;gap:10px;justify-content:space-between;flex-wrap:wrap"><button class="btn ghost" type="button" id="sreset">Standaard</button><button class="btn co" type="button" id="sdone">Klaar</button></div></div>`;
+    syncPresets(); const d = document.getElementById("pdesc"), sd = m.querySelector("#sdur"); if (d && sd) sd.textContent = d.textContent;
+    m.querySelectorAll("[data-sp]").forEach(b => b.onclick = () => { H.cfg.speed = +b.dataset.sp; draw(); });
+    m.querySelectorAll("[data-k]").forEach(b => b.onclick = () => { const k = b.dataset.k; H.cfg[k] = Math.min(OPTS[k].max, Math.max(OPTS[k].min, H.cfg[k] + +b.dataset.d)); draw(); });
+    m.querySelector("#sreset").onclick = () => { for (const k in OPTS) H.cfg[k] = OPTS[k].def; H.cfg.speed = 1; draw(); };
+    m.querySelector("#sdone").onclick = () => m.remove();
+  };
+  m.addEventListener("click", e => { if (e.target === m) m.remove(); });
+  document.body.appendChild(m); draw(); m.querySelector("#sdone").focus();
+}
 function qrSvg(text) { try { const q = qrcode(0, "M"); q.addData(text); q.make(); return q.createSvgTag({ cellSize: 6, margin: 2, scalable: true }); } catch (e) { return ""; } }
 function board(showGain) {
   const ids = H.order.slice().sort((a, b) => H.players[b].score - H.players[a].score);
@@ -553,7 +594,7 @@ function renderHost() {
       <div style="display:grid;gap:18px">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="font-size:clamp(30px,3vw,46px)">Wie doet er mee?</h2><span class="pill" id="pcount"></span></div>
         <div class="players" id="players"></div>
-        <div><h3 style="font-size:24px">Kies een modus</h3>
+        <div><div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><h3 style="font-size:24px">Kies een modus</h3><button class="lnk" id="setb" type="button">Instellingen</button></div>
         <div class="presets">${Object.keys(PRESETS).map(p => `<button class="preset" type="button" data-p="${p}">${esc(PRESETS[p].t)}</button>`).join("")}<button class="preset" type="button" data-p="custom">Custom</button></div>
         <div class="muted" id="pdesc" style="margin:8px 0 10px"></div>
         <div class="rounds">${Object.keys(MODES).map(k => `<label class="rt" data-m="${k}"><input type="checkbox" data-r="${k}" ${H.rounds[k] ? "checked" : ""}><span>${esc(MODES[k].t)}${MODES[k].min > 2 ? `<small>vanaf ${MODES[k].min} spelers</small>` : ""}</span></label>`).join("")}</div></div>
@@ -651,6 +692,7 @@ function renderHost() {
   }));
   app.querySelectorAll("[data-r]").forEach(c => c.addEventListener("change", () => { H.rounds[c.dataset.r] = c.checked; syncPresets(); }));
   if (ph === "lobby") syncPresets();
+  on("setb", openSettings);
   live();
   requestAnimationFrame(() => app.querySelectorAll(".fl[data-w]").forEach(f => f.style.width = f.dataset.w + "%"));
   if (ph === "draw" || ph === "draw_r") requestAnimationFrame(redraw);

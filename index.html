@@ -69,6 +69,16 @@ input{font:inherit;font-size:18px}
 .rounds .rt{min-height:46px;padding:6px 12px;font-size:16px}
 .presets{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 .preset{background:#fff;border:3px solid var(--ink);border-radius:999px;padding:8px 16px;font-weight:900;font-size:16px;min-height:44px;box-shadow:0 3px 0 var(--ink)}
+.modal{position:fixed;inset:0;background:rgba(20,33,61,.55);display:grid;place-items:center;z-index:20;padding:16px}
+.sheet{width:min(620px,100%);max-height:94vh;overflow:auto;padding:20px 24px;display:grid;gap:12px}
+.optrow{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;padding:5px 0;border-bottom:2px dashed rgba(20,33,61,.18)}
+.optrow.dim{opacity:.55}
+.stp{display:flex;align-items:center;gap:10px}.stp b{font-family:"Lilita One";font-size:26px;min-width:30px;text-align:center;font-variant-numeric:tabular-nums}
+.stp button{width:44px;height:44px;border-radius:12px;border:3px solid var(--ink);background:#fff;font-weight:900;font-size:24px;line-height:1;box-shadow:0 3px 0 var(--ink)}
+.stp button:disabled{opacity:.35}
+.seg{display:flex;border:3px solid var(--ink);border-radius:14px;overflow:hidden}
+.seg button{flex:1;padding:10px;min-height:46px;font-weight:900;background:#fff;border-right:3px solid var(--ink)}.seg button:last-child{border-right:0}
+.seg button.on{background:var(--ink);color:var(--y)}
 .preset.on{background:var(--ink);color:var(--y)}
 .preset:focus-visible{outline:4px solid var(--bl);outline-offset:2px}
 .rt{display:flex;gap:10px;align-items:center;background:#fff;border:3px solid var(--ink);border-radius:14px;padding:10px 14px;font-weight:800;cursor:pointer;min-height:52px}
@@ -217,7 +227,7 @@ input{font:inherit;font-size:18px}
 <div id="conn" class="conn hide">Verbinding kwijt…</div>
 <script src="vendor/supabase.js"></script>
 <script src="vendor/qrcode.js"></script>
-<script src="data.js?v=5"></script>
-<script src="app.js?v=5"></script>
+<script src="data.js?v=6"></script>
+<script src="app.js?v=6"></script>
 </body>
 </html>

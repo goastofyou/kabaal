@@ -27,6 +27,9 @@ In de lobby kies je een modus of vink je zelf rondes aan (Custom):
 - **Friends Mode**: Most Likely To, How Many of Us?, The Faker, Fifty-Fifty
 - **Everything**: alle 11 rondes
 
+## Instellingen
+Via *Instellingen* in de lobby: tijd per vraag (Kort/Normaal/Lang) en per ronde het aantal vragen, beurten of stappen. Het grote scherm onthoudt je keuzes.
+
 - Spelen: open de GitHub Pages-link, klik *Start een spel op dit scherm*, en laat spelers de QR-code scannen.
 - Realtime verbinding via Supabase Realtime (broadcast) — geen database nodig.
 - Vragen en woorden aanpassen: `data.js`.
