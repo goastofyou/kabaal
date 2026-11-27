@@ -593,7 +593,7 @@ function renderHost() {
   } else if (ph === "art_d") {
     stage = `<div class="qwrap">${rlabel()}${bigQ("Iedereen tekent zijn geheime opdracht")}<div class="muted big">Kijk op je telefoon wat je moet tekenen. Druk op Klaar als je tekening af is.</div>${waitRow()}</div>`;
   } else if (ph === "art_w") {
-    stage = `<div class="qwrap">${rlabel()}<div class="psy">${av(P_(it.artist))}<span class="muted big">Kunstwerk van ${esc(P_(it.artist).name)}</span></div><div class="artbox">${paintSlot(it.strokes)}</div><div class="muted big">Wat stelt dit voor? Verzin op je telefoon een titel die echt klinkt.</div>${waitRow()}</div>`;
+    stage = `<div class="qwrap">${rlabel()}<div class="psy">${av(P_(it.artist))}<span class="muted big">Kunstwerk van ${esc(P_(it.artist).name)}</span></div><div class="artbox s3">${paintSlot(it.strokes)}</div><div class="muted big">Wat stelt dit voor? Verzin op je telefoon een titel die echt klinkt.</div>${waitRow()}</div>`;
   } else if (ph === "tele_s") {
     const kind = it.step % 2 ? "Tekenen" : it.step ? "Beschrijven" : "Schrijven";
     stage = `<div class="qwrap">${rlabel()}<div class="rlabel" style="background:var(--co);color:#fff">Stap ${it.step + 1} van ${r.L}</div>${bigQ(kind + "!")}<div class="muted big">${it.step === 0 ? "Schrijf een gekke zin op je telefoon." : it.step % 2 ? "Teken de zin die je op je telefoon krijgt." : "Beschrijf de tekening die je op je telefoon ziet."}</div>${waitRow()}</div>`;
