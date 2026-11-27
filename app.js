@@ -790,9 +790,10 @@ function liveLobby() {
   const el = document.getElementById("players"); if (!el) return;
   const act = active();
   const chip = id => `<span class="chip ${act.includes(id) ? "" : "off"}">${av(H.players[id])}${esc(H.players[id].name)}</span>`;
-  el.innerHTML = !H.order.length ? `<div class="muted" style="font-size:20px">Nog niemand… Scan de QR-code of ga naar de link.</div>`
+  const html = !H.order.length ? `<div class="muted" style="font-size:20px">Nog niemand… Scan de QR-code of ga naar de link.</div>`
     : H.cfg.teams ? TEAMS.slice(0, H.cfg.teams).map((t, i) => `<div class="tcol" style="--tc:${t.c}"><b>${t.n}</b><div class="players">${H.order.filter(id => H.players[id].tm === i).map(chip).join("")}</div></div>`).join("") + `<button class="lnk" id="tshuf" type="button">Teams husselen</button>`
     : H.order.map(chip).join("");
+  if (el.dataset.h !== html) { el.innerHTML = html; el.dataset.h = html; }
   const ts = document.getElementById("tshuf"); if (ts) ts.onclick = () => { assignTeams(true); liveLobby(); pubSoon(); };
   const n = document.getElementById("pcount"); if (n) n.textContent = act.length === 1 ? "1 speler" : act.length + " spelers";
   const sb = document.getElementById("startb"); if (sb) sb.disabled = act.length < 2;
@@ -1083,7 +1084,7 @@ function send(v) { P.sent[P.k] = true; P.net.send("ans", { id: P.id, k: P.k, v }
 function updPhone() {
   const sc = document.getElementById("psc"); if (sc) sc.textContent = me().score;
   const st = P.st, list = document.getElementById("plist");
-  if (list && st.ph === "lobby") list.innerHTML = st.pl.map(p => `<span class="chip" style="font-size:16px">${av(PL(p))}${esc(p[1])}</span>`).join("");
+  if (list && st.ph === "lobby") { const html = st.pl.map(p => `<span class="chip" style="font-size:16px">${av(PL(p))}${esc(p[1])}</span>`).join(""); if (list.dataset.h !== html) { list.innerHTML = html; list.dataset.h = html; } }
 }
 const wait = (h, sub) => `<div class="pmsg"><h2>${h}</h2>${sub ? `<div class="muted">${sub}</div>` : ""}</div>`;
 const look = wait("Kijk naar het scherm!", "");
