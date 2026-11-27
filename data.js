@@ -89,4 +89,63 @@ window.KABAAL_DATA = {
     "brandweerauto", "spin", "piano", "tent", "ijsje", "slak", "robot", "zonnebril",
     "kasteel", "tractor", "walvis", "cactus", "vulkaan", "achtbaan", "telefoon", "klomp"
   ]
+  ,
+  // Lolbroek: vul het grappigste antwoord in
+  quip: [
+    "De slechtste naam voor een kapsalon", "Wat je nooit tegen je schoonmoeder moet zeggen", "Een nieuwe chipssmaak die niemand wil",
+    "Een slechte slogan voor een tandarts", "Wat er 's nachts écht gebeurt in een pretpark", "Het ergste wat je kunt roepen in de stiltecoupé",
+    "Een verschrikkelijk cadeau voor je 18e verjaardag", "De titel van de slechtste Nederlandse film ooit", "Wat je hond echt denkt als je thuiskomt",
+    "Een rare reden om je baan op te zeggen", "Het slechtste moment om te niezen", "Een nieuwe wet die jij zou invoeren",
+    "Een verdacht ingrediënt in oma's soep", "De laatste zin in je dagboek", "Een vreselijke naam voor een kat",
+    "Wat je liever niet hoort van je piloot", "Het slechtste excuus om te laat te komen", "Een nieuwe Olympische sport",
+    "Wat er op je grafsteen komt te staan", "Een app die niemand nodig heeft", "Het slechtste wat je in een sollicitatiegesprek kunt zeggen",
+    "Een nieuwe Nederlandse feestdag", "Waarom Zeeuwen eigenlijk zoveel mosselen eten", "Wat er mis kan gaan op een eerste date",
+    "Een slechte naam voor een sportschool", "Het geheim van de kantine van de voetbalclub", "Iets wat je nooit in de groepsapp moet sturen",
+    "Een totaal nutteloze superkracht", "De slechtste tatoeage ooit", "Een rare bijbaan",
+    "Een liedje dat je nooit op een bruiloft moet draaien", "Het eerste wat aliens zouden zeggen als ze landen", "Een slecht idee voor een realityshow",
+    "Wat je kat 's nachts uitspookt", "De naam van je band als je morgen beroemd wordt", "Het slechtste geurtje voor een kaars",
+    "Een verkeersbord dat zou moeten bestaan", "Wat de buren écht over jou zeggen", "De slechtste smaak tandpasta", "Een nieuwe regel voor de schoolkantine"
+  ],
+  // Golflengte: [links, rechts]
+  wave: [
+    ["Koud", "Heet"], ["Gezond", "Ongezond"], ["Saai", "Spannend"], ["Goedkoop", "Duur"], ["Lelijk", "Mooi"], ["Overschat", "Onderschat"],
+    ["Makkelijk", "Moeilijk"], ["Nutteloos", "Nuttig"], ["Klein", "Groot"], ["Stil", "Luid"], ["Ouderwets", "Modern"], ["Slecht ontbijt", "Goed ontbijt"],
+    ["Zacht", "Hard"], ["Eng", "Schattig"], ["Normaal", "Raar"], ["Slechte superkracht", "Goede superkracht"], ["Vies", "Lekker"], ["Hobby", "Sport"],
+    ["Kinderachtig", "Volwassen"], ["Slecht huisdier", "Goed huisdier"], ["Rustig", "Druk"], ["Zoet", "Hartig"], ["Langzaam", "Snel"], ["Slechte film", "Goede film"],
+    ["Helemaal niet Zeeuws", "Typisch Zeeuws"], ["Onromantisch", "Romantisch"], ["Zomers", "Winters"], ["Geldverspilling", "Goede investering"], ["Makkelijk te tekenen", "Moeilijk te tekenen"], ["Slecht cadeau", "Goed cadeau"]
+  ],
+  // De Faker: [categorie, geheim woord]
+  fake: [
+    ["Dier", "Pinguïn"], ["Dier", "Giraf"], ["Dier", "Kwal"], ["Eten", "Pizza"], ["Eten", "Stroopwafel"], ["Eten", "Patat"],
+    ["Plek", "Ziekenhuis"], ["Plek", "Strand"], ["Plek", "Bioscoop"], ["Plek", "Camping"], ["Plek", "Supermarkt"], ["Beroep", "Brandweerman"],
+    ["Beroep", "Tandarts"], ["Sport", "Voetbal"], ["Sport", "Schaatsen"], ["Voorwerp", "Paraplu"], ["Voorwerp", "Tandenborstel"], ["Voorwerp", "Spiegel"],
+    ["Vervoer", "Fiets"], ["Vervoer", "Vliegtuig"], ["Feest", "Sinterklaas"], ["Feest", "Koningsdag"], ["Muziek", "Gitaar"], ["Natuur", "Vulkaan"]
+  ],
+  // Doorgeefluik: voorbeeldzinnen als inspiratie
+  tele: ["Een koe die leert skateboarden", "Oma wint de Tour de France", "Een haai in de bubbelbad", "De koning eet patat op het strand", "Een robot die verliefd wordt op een broodrooster"],
+  // Kunstbluf: rare tekenopdrachten
+  art: [
+    "een kat die belastingaangifte doet", "een haai op de fiets", "een wolk met een slecht humeur", "een banaan op vakantie", "een robot die verliefd is",
+    "oma op een skateboard", "een spook in de supermarkt", "een sneeuwpop in de sauna", "een koe die DJ is", "een piraat met hoogtevrees",
+    "een boze tosti", "een vis die gaat solliciteren", "een dinosaurus bij de tandarts", "een eenhoorn in de file", "een verdrietige pizza",
+    "een hond die stiekem snoept", "een astronaut die zijn sleutels kwijt is", "een tomaat die gaat sporten", "een egel die wil knuffelen", "een draak die kookt",
+    "een slak met haast", "een zombie op een verjaardag", "een pinguïn op het strand", "een cactus die een knuffel wil", "een boom met een selfiestick",
+    "een ufo bij de snackbar", "een uil die niet kan slapen", "een krokodil met een tandenborstel", "een molen die danst", "een kip op de snelweg"
+  ],
+  // Verdeel de groep: dilemma met ___
+  split: [
+    "Je krijgt €10.000, maar ___.", "Je mag gratis op wereldreis, maar ___.", "Je wordt wereldberoemd, maar ___.", "Je hoeft nooit meer te werken, maar ___.",
+    "Je kunt vliegen, maar ___.", "Je krijgt elke dag gratis patat, maar ___.", "Je wint de loterij, maar ___.", "Je mag een jaar gratis in een villa wonen, maar ___.",
+    "Je wordt nooit meer ziek, maar ___.", "Je kunt gedachten lezen, maar ___.", "Je krijgt een eigen privéchauffeur, maar ___.", "Je mag elke wedstrijd van je favoriete club gratis zien, maar ___.",
+    "Je krijgt je droombaan, maar ___.", "Je mag een dag onzichtbaar zijn, maar ___.", "Je krijgt een gratis sportauto, maar ___."
+  ],
+  // Hoeveel van ons?
+  count: [
+    "Heb jij weleens een verkeersboete gehad?", "Heb jij weleens iets kapotgemaakt en het niet verteld?", "Ben jij weleens in slaap gevallen in de bus of trein?",
+    "Heb jij weleens een hele serie in één weekend gekeken?", "Heb jij weleens gedaan alsof je je telefoon niet hoorde?", "Kun jij koken zonder recept?",
+    "Heb jij weleens een vlucht gemist?", "Ben jij bang voor spinnen?", "Zing jij weleens onder de douche?", "Eet jij pizza met ananas?",
+    "Heb jij weleens gelogen over je leeftijd?", "Kun jij een radslag?", "Heb jij weleens een plant laten doodgaan?", "Ben jij weleens je eigen verjaardag vergeten?",
+    "Heb jij weleens een appje naar de verkeerde persoon gestuurd?", "Heb jij weleens gespijbeld?", "Lees jij de voorwaarden voordat je op 'akkoord' klikt?",
+    "Snurk jij?", "Heb jij weleens stiekem een hap van andermans eten genomen?", "Heb jij weleens een tatoeage overwogen?"
+  ]
 };
